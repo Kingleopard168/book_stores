@@ -9,11 +9,21 @@ from django.utils.text import slugify
 
 # Create your models here .
 
+class Country(models.Model):
+    name = models.CharField(max_length=80)
+    code = models.CharField(max_length=2)
+
 
 class Address(models.Model):
     street = models.CharField(max_length=80)
     posttal_code = models.CharField(max_length=5)
     city = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.street}, {self.posttal_code}, {self.city}"
+
+    class Meta:
+        verbose_name_plural = "address Entries"
 
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
@@ -38,6 +48,7 @@ class Book(models.Model):
     is_bestselling = models.BooleanField(default=False)
     slug = models.SlugField(default="", blank=True, 
         null=False,db_index=True)
+    published_countries = models.ManyToManyField(Country, null=False)    
 
     def get_absolute_url(self):
         return reverse("book-detail", args=[self.slug])
